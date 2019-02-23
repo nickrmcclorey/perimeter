@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JFrame;
 
 public class Perimeter {
@@ -36,30 +35,21 @@ public class Perimeter {
         return highest;
     }
 
-    public static double angle(Point source, Point destination, double currentAngle) {
+    public static double angleDifference(Point source, Point destination, double currentAngle) {
         double angle = Math.atan2((destination.y - source.y), (destination.x - source.x));
-        while (angle > 0) {
+        while (angle > currentAngle) {
             angle -= (Math.PI * 2);
         }
-        if (angle == 0.0) {
-            System.out.println("okay");
-            System.out.println((destination.y - source.y));
-            System.out.println((destination.x - source.x));
-            System.out.println((destination.y - source.y) / (destination.x - source.x));
-        }
-        return angle; 
+
+        return currentAngle - angle; 
     }
 
     public static Point findNextPoint(List<Point> points, Point current, double currentAngle) {
         Point next = points.get(0);
-        double maxAngle = angle(current, points.get(0), currentAngle);
+        double maxAngle = angleDifference(current, points.get(0), currentAngle);
 
         for (int k = 1; k < points.size(); k++) {
-            if (points.get(k).x == current.x) {
-                continue;
-            }
-            double ang = angle(current, points.get(k), currentAngle);
-            System.out.println("ang: " + ang);
+            double ang = angleDifference(current, points.get(k), currentAngle);
             if (ang > maxAngle) {
                next = points.get(k);
                maxAngle = ang;
@@ -73,12 +63,24 @@ public class Perimeter {
     public static Polygon findPerimeter(List<Point> points) {
         Polygon perimeter = new Polygon();
         Point currentPoint = highestPoint(points);
+        Point highesPoint = currentPoint;
         double currentAngle = 0;
-        perimeter.addPoint(currentPoint.x, currentPoint.y);
+        perimeter.addPoint(currentPoint.x + 4, currentPoint.y + 4);
 
         Point nextPoint = findNextPoint(points, currentPoint, currentAngle);
-        perimeter.addPoint(nextPoint.x, nextPoint.y);
-        perimeter.addPoint(950, 950);
+        perimeter.addPoint(nextPoint.x + 4, nextPoint.y + 4);
+        currentAngle = -1.0 * angleDifference(currentPoint, nextPoint, 0);
+        currentPoint = nextPoint;
+
+        int k = 0;
+        while (currentPoint != highesPoint && k++ < 10) {
+            nextPoint = findNextPoint(points, currentPoint, currentAngle);
+            perimeter.addPoint(nextPoint.x + 4, nextPoint.y + 4);
+            currentAngle = -1.0 * angleDifference(currentPoint, nextPoint, 0);
+            currentPoint = nextPoint;
+            System.out.println("current angle: " + currentAngle);
+        }
+        System.out.println(currentAngle);
 
         return perimeter;
     }
