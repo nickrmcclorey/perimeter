@@ -3,12 +3,11 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.util.List;
 import javax.swing.JPanel;
-import com.sun.javafx.geom.Point2D;
-import javafx.scene.shape.Circle;
 
 public class DrawPolyPanel extends JPanel {
 
     public List<Point> points;
+    public List<Polygon> polygons;
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -17,7 +16,8 @@ public class DrawPolyPanel extends JPanel {
             g.fillOval(points.get(k).x, points.get(k).y, 8, 8);
         }
 
-        Polygon perimeter = Perimeter.findPerimeter(points);
-        g.drawPolygon(perimeter);
+        for (int k = 0; k < polygons.size(); k++) {
+            g.drawPolygon(polygons.get(k));
+        }
     }
 }

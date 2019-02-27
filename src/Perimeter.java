@@ -1,6 +1,8 @@
 import java.awt.Container;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -55,7 +57,6 @@ public class Perimeter {
                maxAngle = ang;
             }
         }
-        System.out.println();
 
         return next;
     }
@@ -78,16 +79,14 @@ public class Perimeter {
             perimeter.addPoint(nextPoint.x + 4, nextPoint.y + 4);
             currentAngle = -1.0 * angleDifference(currentPoint, nextPoint, 0);
             currentPoint = nextPoint;
-            System.out.println("current angle: " + currentAngle);
         }
-        System.out.println(currentAngle);
 
         return perimeter;
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        frame.setTitle("Austin");
+        frame.setTitle("Perimeter Finder");
         frame.setSize(1000, 1000);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -98,10 +97,30 @@ public class Perimeter {
                 // System.exit(0);
             }
         });
+        MouseListener listener = new MouseListener(){    
+            public void mouseClicked(MouseEvent e) {
+                JFrame frame = (JFrame) e.getSource();
+                DrawPolyPanel panel = (DrawPolyPanel) frame.getContentPane().getComponents()[0];
+                panel.points.add(new Point(e.getX(), e.getY()));
+                panel.polygons.set(0, Perimeter.findPerimeter(panel.points));
+                panel.revalidate();
+                panel.repaint();
+            }
+
+            public void mouseReleased(MouseEvent e) { }
+            public void mousePressed(MouseEvent e) { }
+            public void mouseExited(MouseEvent e) { }
+            public void mouseEntered(MouseEvent e) { }
+        };
+        frame.addMouseListener(listener);
+
+        
 
         Container contentPane = frame.getContentPane();
         DrawPolyPanel panel = new DrawPolyPanel();
         panel.points = getPoints();
+        panel.polygons = new ArrayList<Polygon>();
+        panel.polygons.add(Perimeter.findPerimeter(panel.points));
         contentPane.add(panel);
 
         frame.setVisible(true);
