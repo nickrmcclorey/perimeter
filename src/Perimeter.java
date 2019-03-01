@@ -101,9 +101,10 @@ public class Perimeter {
             public void mouseClicked(MouseEvent e) {
                 JFrame frame = (JFrame) e.getSource();
                 DrawPolyPanel panel = (DrawPolyPanel) frame.getContentPane().getComponents()[0];
-                panel.points.add(new Point(e.getX(), e.getY()));
+                int x = e.getX() - 15;
+                int y = e.getY() - 45;
+                panel.points.add(new Point(x, y));
                 panel.polygons.set(0, Perimeter.findPerimeter(panel.points));
-                panel.revalidate();
                 panel.repaint();
             }
 
