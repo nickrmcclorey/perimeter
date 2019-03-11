@@ -1,4 +1,7 @@
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
@@ -9,7 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 public class Perimeter {
 
@@ -92,17 +97,12 @@ public class Perimeter {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
-
-            public void windowDeactivated(WindowEvent e) {
-                // System.exit(0);
-            }
         });
         MouseListener listener = new MouseListener(){    
             public void mouseClicked(MouseEvent e) {
-                JFrame frame = (JFrame) e.getSource();
-                DrawPolyPanel panel = (DrawPolyPanel) frame.getContentPane().getComponents()[0];
-                int x = e.getX() - 15;
-                int y = e.getY() - 45;
+                DrawPolyPanel panel = (DrawPolyPanel) e.getSource();
+                int x = e.getX() - 5;
+                int y = e.getY() - 5;
                 panel.points.add(new Point(x, y));
                 panel.polygons.set(0, Perimeter.findPerimeter(panel.points));
                 panel.repaint();
@@ -113,16 +113,25 @@ public class Perimeter {
             public void mouseExited(MouseEvent e) { }
             public void mouseEntered(MouseEvent e) { }
         };
-        frame.addMouseListener(listener);
-
-        
-
+        // frame.addMouseListener(listener);
         Container contentPane = frame.getContentPane();
+
+
         DrawPolyPanel panel = new DrawPolyPanel();
         panel.points = getPoints();
         panel.polygons = new ArrayList<Polygon>();
         panel.polygons.add(Perimeter.findPerimeter(panel.points));
-        contentPane.add(panel);
+        panel.setPreferredSize(new Dimension(1000, 1100));
+        panel.addMouseListener(listener);
+
+        Button button = new Button("Reset");
+        button.setPreferredSize(new Dimension(10, 100));
+        
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+        contentPane.add(button, BorderLayout.PAGE_START);
+        contentPane.add(panel, BorderLayout.PAGE_END);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
